@@ -2,10 +2,21 @@ import time
 import os
 import csv
 
+class font:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    END = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    TITLE = HEADER + BOLD + UNDERLINE
+
 def init ():
     global settings, dfo
     settings = {}
-    print "\t WEIGHT TRACKER"
+    print font.TITLE + "\tWEIGHT TRACKER" + font.END
     # open data file or create one
     dfo = open("data", "ab")
     if (os.path.isfile('./settings.csv')):
@@ -25,7 +36,7 @@ def createSettings ():
             standard_w = 'kg'
             break
         else:
-            print 'Invalid Choice'
+            print font.WARNING + "Invalid choice!" + font.END
     while True: 
         standard_choice_h = raw_input("Enter which standard you would like to use for height: \n 1. Inches (in) \n 2. Centimeters (cm) \n Choice: ")
         if (standard_choice_h == '1'):
@@ -50,9 +61,9 @@ def createSettings ():
     return
 
 def changeSettings ():
-    print "\nCurrent Settings"
-    print "Weight: " + "Pounds (lb)" if settings['standard_w'] == 'lb' else "Kilograms (kg)"
-    print "Height: " + "Inches (in)" if settings['standard_h'] == 'in' else "Centimeters (cm)"
+    print font.OKBLUE + "\nCurrent Settings:" + font.END
+    print "Weight: Pounds (lb)" if settings['standard_w'] == 'lb' else "Weight: Kilograms (kg)"
+    print "Height: Inches (in)" if settings['standard_h'] == 'in' else "Height: Centimeters (cm)"
     return
 
 def loadSettings ():
@@ -68,32 +79,33 @@ def enterWeight ():
     return
 
 def convertWeight (weight):
-    if (settings.standard_w == 'lb'):
+    if (settings['standard_w'] == 'lb'):
         weight = weight / 2.2046226218
     else:
         weight = weight * 2.2046226218
     return weight
 
 def convertHeight (height):
-    if (settings.standard_h == 'in'):
+    if (settings['standard_h'] == 'in'):
         height = height / 0.3937
     else:
         height = height * 0.3937
     return height
 
 def calculateBMI (height, weight):
-    if (settings.standard_h == 'in'):
+    if (settings['standard_h'] == 'in'):
         height = convertHeight (height)
-    if (settings.standard_w == 'lb'):
+    if (settings['standard_w'] == 'lb'):
         weight = convertWeight (weight)
     bmi = weight / (height * height)
     return bmi
 
 def outputOptions ():
-    print "Options: "
+    print font.OKBLUE + "Options: " + font.END
     print "1. Enter weight"
-    print "2. Settings"
-    print "3. Exit"
+    print "2. Latest BMI"
+    print "3. Settings"
+    print "4. Exit"
 
 # ---main---
 init ()
@@ -101,11 +113,13 @@ init ()
 while True:
     choice = raw_input("Select Option: ")
     if (choice == '1'):
-        enterWeight()
+        enterWeight ()
     elif (choice == '2'):
-        changeSettings()
+        print calculateBMI (int(settings['height']), 100)
     elif (choice == '3'):
-        dfo.close()
+        changeSettings ()
+    elif (choice == '4'):
+        dfo.close ()
         break
     else:
-        print "Invalid choice!"
+        print font.WARNING + "Invalid choice!" + font.END
