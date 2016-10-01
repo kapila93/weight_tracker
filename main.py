@@ -46,7 +46,7 @@ def createSettings ():
             standard_h = 'cm'
             break
         else:
-            print 'Invalid Choice'
+            print font.WARNING + "Invalid choice!" + font.END
     height = raw_input("Enter your current height in CM: ")
     goal = raw_input("Enter your desired weight (" + standard_w + "): ")
     settings = {
@@ -97,7 +97,7 @@ def calculateBMI (height, weight):
         height = convertHeight (height)
     if (settings['standard_w'] == 'lb'):
         weight = convertWeight (weight)
-    bmi = weight / (height * height)
+    bmi = weight / ((height/100)  * (height/100))
     return bmi
 
 def outputOptions ():
@@ -115,6 +115,7 @@ while True:
     if (choice == '1'):
         enterWeight ()
     elif (choice == '2'):
+        print int(settings['height'])
         print calculateBMI (int(settings['height']), 100)
     elif (choice == '3'):
         changeSettings ()
